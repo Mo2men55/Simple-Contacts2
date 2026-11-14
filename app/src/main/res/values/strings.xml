@@ -1,0 +1,35 @@
+<resources>
+    <string name="app_name">Simple Contacts</string>
+    <string name="student_info_header">Student Name | Student ID</string>
+    <string name="project_subtitle">Mobile Application Project</string>
+    <string name="quick_actions">Quick Actions</string>
+
+    <string name="add_contact">Add contact</string>
+    <string name="new_contact">New contact</string>
+    <string name="edit_contact">Edit contact</string>
+    <string name="contact_details">Contact Details</string>
+    <string name="search_hint">Search by name or phone</string>
+    <string name="no_contacts">No contacts yet</string>
+    <string name="no_results">No matching contacts</string>
+
+    <string name="name">Name</string>
+    <string name="phone">Phone</string>
+    <string name="email">Email</string>
+    <string name="email_optional">Email (optional)</string>
+    <string name="favorite">Favorite</string>
+    <string name="is_favorite">Marked as Favorite</string>
+    <string name="error_name">Name is required</string>
+    <string name="error_phone">Enter a valid phone number</string>
+
+    <string name="call">Call</string>
+    <string name="message">Message</string>
+    <string name="share">Share</string>
+    <string name="share_contact">Share contact</string>
+    <string name="edit">Edit</string>
+    <string name="delete">Delete</string>
+    <string name="save">Save</string>
+    <string name="cancel">Cancel</string>
+    <string name="delete_contact_title">Delete contact?</string>
+    <string name="delete_contact_message">%1$s will be permanently removed.</string>
+    <string name="total_contacts">Total Contacts: %1$d</string>
+</resources>
