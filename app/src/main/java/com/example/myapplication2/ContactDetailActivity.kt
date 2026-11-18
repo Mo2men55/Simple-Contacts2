@@ -127,4 +127,24 @@ class ContactDetailActivity : AppCompatActivity() {
 
 
     }
+
+    override fun onStart() {
+        super.onStart()
+        Log.d(TAG, "ContactDetailActivity - onStart()")
+    }
+
+    override fun onPause() {
+        super.onPause()
+        Log.d(TAG, "ContactDetailActivity - onPause()")
+    }
+
+    override fun onStop() {
+        super.onStop()
+        Log.d(TAG, "ContactDetailActivity - onStop()")
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        Log.d(TAG, "ContactDetailActivity - onDestroy()")
+    }
 }
