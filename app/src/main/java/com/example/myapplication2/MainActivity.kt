@@ -43,6 +43,13 @@ class MainActivity : AppCompatActivity() {
                 startActivity(intent)
             }
         }
+
+        // Open ContactEditActivity on Add button click
+        btnAddContact.setOnClickListener {
+            val intent = Intent(this, ContactEditActivity::class.java)
+            startActivity(intent)
+        }
+
         setupSearchFilter()
         setupAddButton()
         updateTotalCount()

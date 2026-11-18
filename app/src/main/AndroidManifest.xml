@@ -19,10 +19,30 @@
             android:windowSoftInputMode="adjustResize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
+            //abdallah
         </activity>
+
+        <activity
+            android:name=".ContactDetailActivity"
+            android:exported="false"
+            android:label="@string/contact_details"
+            android:parentActivityName=".MainActivity" />
+
+        <activity
+            android:name=".ContactEditActivity"
+            android:exported="true"
+            android:label="@string/edit_contact"
+            android:parentActivityName=".MainActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.SEND" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="text/plain" />
+            </intent-filter>
+        </activity>
+
     </application>
 
 </manifest>
