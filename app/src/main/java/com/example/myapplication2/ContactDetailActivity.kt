@@ -1,4 +1,4 @@
-package com.example.myapplication // أو com.example.myapplication2 حسب الباكيج عندك
+package com.example.myapplication2
 
 import android.content.Intent
 import android.net.Uri
