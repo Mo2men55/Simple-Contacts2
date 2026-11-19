@@ -1,4 +1,4 @@
-package com.example.myapplication
+package com.example.myapplication2
 
 import android.content.Intent
 import android.os.Bundle
@@ -10,8 +10,8 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
-import com.example.myapplication.data.Contact
-import com.example.myapplication.data.ContactDatabase
+import com.example.myapplication2.data.Contact
+import com.example.myapplication2.data.ContactDatabase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext

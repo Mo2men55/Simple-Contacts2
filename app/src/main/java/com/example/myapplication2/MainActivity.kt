@@ -8,12 +8,24 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
 import android.view.View
-import android.widget.ArrayAdapter
+import android.widget.Button
+import android.widget.EditText
 import android.widget.ListView
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
+import com.example.myapplication2.data.Contact
+import com.example.myapplication2.data.ContactDatabase
 import com.example.myapplication2.UI.ContactAdapter
-import com.example.myapplication2.databinding.ActivityMainBinding
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
+/**
+ * Main Activity for Simple Contacts application.
+ * Handles view binding, real-time search filtering, contact list display,
+ * lifecycle logging, and Room database synchronization.
+ */
 class MainActivity : AppCompatActivity() {
 
     private val TAG = "ActivityLifecycle"
@@ -21,45 +33,51 @@ class MainActivity : AppCompatActivity() {
     private val KEY_STUDENT_INFO = "student_info"
     private val KEY_LAST_SEARCH = "last_search"
 
-    private lateinit var binding: ActivityMainBinding
+    private lateinit var tvStudentInfo: TextView
+    private lateinit var etSearch: EditText
+    private lateinit var tvTotalCount: TextView
+    private lateinit var lvContacts: ListView
+    private lateinit var tvEmpty: TextView
+    private lateinit var btnAddContact: Button
+
+    private lateinit var adapter: ContactAdapter
     private lateinit var sharedPreferences: SharedPreferences
 
-    private val allContacts = mutableListOf<String>()
-    private val filteredContacts = mutableListOf<String>()
-    private lateinit var adapter: ContactAdapter
-
-    private lateinit var lvContacts: ListView
     private var currentSearchQuery: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityMainBinding.inflate(layoutInflater)
-        setContentView(binding.root)
-
+        setContentView(R.layout.activity_main)
         Log.d(TAG, "MainActivity - onCreate()")
 
         // Initialize SharedPreferences
         sharedPreferences = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
 
-        // Display Student Header Info from SharedPreferences
+        // Initialize Views
+        tvStudentInfo = findViewById(R.id.tv_student_info)
+        etSearch = findViewById(R.id.et_search)
+        tvTotalCount = findViewById(R.id.tv_total_count)
+        lvContacts = findViewById(R.id.lv_contacts)
+        tvEmpty = findViewById(R.id.tv_empty)
+        btnAddContact = findViewById(R.id.btn_add_contact)
+
+        // Display Student Header Info
         val savedStudentInfo = sharedPreferences.getString(
             KEY_STUDENT_INFO,
             getString(R.string.student_info_header)
         )
-        binding.tvStudentInfo.text = savedStudentInfo
+        tvStudentInfo.text = savedStudentInfo
 
-        // Restore Search State across rotation or from SharedPreferences
+        // Restore saved instance state across screen rotation
         if (savedInstanceState != null) {
             currentSearchQuery = savedInstanceState.getString(KEY_LAST_SEARCH, "")
-            binding.etSearch.setText(currentSearchQuery)
+            etSearch.setText(currentSearchQuery)
         } else {
             currentSearchQuery = sharedPreferences.getString(KEY_LAST_SEARCH, "") ?: ""
             if (currentSearchQuery.isNotEmpty()) {
-                binding.etSearch.setText(currentSearchQuery)
+                etSearch.setText(currentSearchQuery)
             }
         }
-
-        lvContacts = findViewById(R.id.lv_contacts)
 
         // Initialize ListView with ArrayAdapter
         adapter = ContactAdapter(this, mutableListOf())
@@ -81,67 +99,58 @@ class MainActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
-        setupSearchFilter()
-        setupAddButton()
-        updateTotalCount()
-    }
-
-    private fun setupSearchFilter() {
-        binding.etSearch.addTextChangedListener(object : TextWatcher {
+        // Search Filter Listener
+        etSearch.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 currentSearchQuery = s?.toString()?.trim() ?: ""
                 saveLastSearchToPrefs(currentSearchQuery)
-                filterContacts(currentSearchQuery)
+                loadContactsFromRoom(currentSearchQuery)
             }
-
             override fun afterTextChanged(s: Editable?) {}
         })
+
+        // Seed sample contacts on first launch if empty
+        seedSampleDataIfEmpty()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        Log.d(TAG, "MainActivity - onResume()")
+        loadContactsFromRoom(currentSearchQuery)
+    }
+
+    private fun loadContactsFromRoom(query: String) {
+        lifecycleScope.launch(Dispatchers.IO) {
+            val db = ContactDatabase.getInstance(this@MainActivity)
+            val contactsList = if (query.isEmpty()) {
+                db.contactDao().getAllContacts()
+            } else {
+                db.contactDao().searchContacts(query)
+            }
+
+            withContext(Dispatchers.Main) {
+                adapter.updateData(contactsList)
+                tvTotalCount.text = getString(R.string.total_contacts, contactsList.size)
+
+                if (contactsList.isEmpty()) {
+                    tvEmpty.visibility = View.VISIBLE
+                    tvEmpty.text = if (query.isEmpty()) {
+                        getString(R.string.no_contacts)
+                    } else {
+                        getString(R.string.no_results)
+                    }
+                } else {
+                    tvEmpty.visibility = View.GONE
+                }
+            }
+        }
     }
 
     private fun saveLastSearchToPrefs(query: String) {
         sharedPreferences.edit()
             .putString(KEY_LAST_SEARCH, query)
             .apply()
-    }
-
-    private fun filterContacts(query: String) {
-        filteredContacts.clear()
-        if (query.trim().isEmpty()) {
-            filteredContacts.addAll(allContacts)
-        } else {
-            val lowerQuery = query.trim().lowercase()
-            allContacts.filterTo(filteredContacts) { contact ->
-                contact.lowercase().contains(lowerQuery)
-            }
-        }
-        adapter.notifyDataSetChanged()
-        updateEmptyView()
-        updateTotalCount()
-    }
-
-    private fun setupAddButton() {
-        binding.btnAddContact.setOnClickListener {
-            // Action handled in subsequent features
-        }
-    }
-
-    private fun updateEmptyView() {
-        if (filteredContacts.isEmpty()) {
-            binding.tvEmpty.visibility = View.VISIBLE
-            binding.tvEmpty.text = if (binding.etSearch.text.isNullOrEmpty()) {
-                getString(R.string.no_contacts)
-            } else {
-                getString(R.string.no_results)
-            }
-        } else {
-            binding.tvEmpty.visibility = View.GONE
-        }
-    }
-
-    private fun updateTotalCount() {
-        binding.tvTotalCount.text = getString(R.string.total_contacts, filteredContacts.size)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -161,11 +170,6 @@ class MainActivity : AppCompatActivity() {
         Log.d(TAG, "MainActivity - onStart()")
     }
 
-    override fun onResume() {
-        super.onResume()
-        Log.d(TAG, "MainActivity - onResume()")
-    }
-
     override fun onPause() {
         super.onPause()
         Log.d(TAG, "MainActivity - onPause()")
@@ -179,5 +183,26 @@ class MainActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         Log.d(TAG, "MainActivity - onDestroy()")
+    }
+
+    private fun seedSampleDataIfEmpty() {
+        lifecycleScope.launch(Dispatchers.IO) {
+            val db = ContactDatabase.getInstance(this@MainActivity)
+            val existing = db.contactDao().getAllContacts()
+            if (existing.isEmpty()) {
+                db.contactDao().insert(
+                    Contact(name = "Alice Smith", phone = "555-0192", email = "alice@example.com", isFavorite = true)
+                )
+                db.contactDao().insert(
+                    Contact(name = "Bob Johnson", phone = "555-0143", email = "bob@example.com", isFavorite = false)
+                )
+                db.contactDao().insert(
+                    Contact(name = "Charlie Brown", phone = "555-0188", email = "charlie@example.com", isFavorite = true)
+                )
+                withContext(Dispatchers.Main) {
+                    loadContactsFromRoom(currentSearchQuery)
+                }
+            }
+        }
     }
 }

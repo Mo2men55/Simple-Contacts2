@@ -1,12 +1,12 @@
-package com.example.myapplication.ui
+package com.example.myapplication2.UI
 
 import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
 import android.widget.Toast
 import androidx.core.net.toUri
-import com.example.myapplication.R
-import com.example.myapplication.data.Contact
+import com.example.myapplication2.R
+import com.example.myapplication2.data.Contact
 
 /** Implicit intents that hand off contact actions to other apps (dialer, SMS, email, share sheet). */
 
