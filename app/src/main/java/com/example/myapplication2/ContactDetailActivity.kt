@@ -17,10 +17,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-/**
- * Contact Detail Activity.
- * Displays contact details and handles navigation to edit screen (Member 5).
- */
 class ContactDetailActivity : AppCompatActivity() {
 
     private val TAG = "ActivityLifecycle"
@@ -46,7 +42,6 @@ class ContactDetailActivity : AppCompatActivity() {
         setContentView(R.layout.activity_detail)
         Log.d(TAG, "ContactDetailActivity - onCreate()")
 
-        // View initialization
         tvInitials = findViewById(R.id.tv_detail_initials)
         tvName = findViewById(R.id.tv_detail_name)
         tvPhone = findViewById(R.id.tv_detail_phone)
@@ -60,16 +55,9 @@ class ContactDetailActivity : AppCompatActivity() {
         btnEdit = findViewById(R.id.btn_edit)
         btnDelete = findViewById(R.id.btn_delete)
 
-
         contactId = intent.getLongExtra("CONTACT_ID", -1L)
 
-        btnEdit.setOnClickListener {
-            val intent = Intent(this, ContactEditActivity::class.java)
-            intent.putExtra("CONTACT_ID", contactId)
-            startActivity(intent)
-        }
-
-        setupImplicitListeners()
+        setupListeners()
     }
 
     override fun onResume() {
@@ -104,9 +92,8 @@ class ContactDetailActivity : AppCompatActivity() {
         tvEmail.text = if (contact.email.isNotEmpty()) contact.email else "None"
         tvFavorite.visibility = if (contact.isFavorite) View.VISIBLE else View.GONE
     }
-    private fun setupImplicitListeners() {
 
-        // Dial phone number
+    private fun setupListeners() {
         btnCall.setOnClickListener {
             contact?.let { c ->
                 val intent = Intent(Intent.ACTION_DIAL, Uri.parse("tel:${c.phone}"))
@@ -114,7 +101,6 @@ class ContactDetailActivity : AppCompatActivity() {
             }
         }
 
-        // Send SMS
         btnSms.setOnClickListener {
             contact?.let { c ->
                 val intent = Intent(Intent.ACTION_SENDTO, Uri.parse("smsto:${c.phone}"))
@@ -122,7 +108,6 @@ class ContactDetailActivity : AppCompatActivity() {
             }
         }
 
-        // Send Email
         btnEmail.setOnClickListener {
             contact?.let { c ->
                 if (c.email.isNotEmpty()) {
@@ -134,7 +119,6 @@ class ContactDetailActivity : AppCompatActivity() {
             }
         }
 
-        // Share contact via chooser
         btnShare.setOnClickListener {
             contact?.let { c ->
                 val shareBody = "Contact: ${c.name}\nPhone: ${c.phone}\nEmail: ${c.email}"
@@ -147,24 +131,35 @@ class ContactDetailActivity : AppCompatActivity() {
             }
         }
 
+        btnEdit.setOnClickListener {
+            val intent = Intent(this, ContactEditActivity::class.java)
+            intent.putExtra("CONTACT_ID", contactId)
+            startActivity(intent)
+        }
+
         btnDelete.setOnClickListener {
-            contact?.let { c ->
-                lifecycleScope.launch(Dispatchers.IO) {
-                    val db = ContactDatabase.getInstance(this@ContactDetailActivity)
-                    db.contactDao().delete(c)
-                    withContext(Dispatchers.Main) {
-                        Toast.makeText(this@ContactDetailActivity, "Contact deleted", Toast.LENGTH_SHORT).show()
-                        finish()
-                    }
+            AlertDialog.Builder(this)
+                .setTitle(R.string.delete_contact_title)
+                .setMessage(getString(R.string.delete_contact_message, contact?.name ?: ""))
+                .setPositiveButton(R.string.delete) { _, _ ->
+                    deleteContact()
+                }
+                .setNegativeButton(R.string.cancel, null)
+                .show()
+        }
+    }
+
+    private fun deleteContact() {
+        contact?.let { c ->
+            lifecycleScope.launch(Dispatchers.IO) {
+                val db = ContactDatabase.getInstance(this@ContactDetailActivity)
+                db.contactDao().delete(c)
+                withContext(Dispatchers.Main) {
+                    Toast.makeText(this@ContactDetailActivity, "Contact deleted", Toast.LENGTH_SHORT).show()
+                    finish()
                 }
             }
         }
-
-
-
-
-
-
     }
 
     override fun onStart() {

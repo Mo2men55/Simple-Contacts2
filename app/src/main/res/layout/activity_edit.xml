@@ -36,7 +36,6 @@
                     android:textColor="#1565C0"
                     android:layout_marginBottom="20dp" />
 
-                <!-- Name Input -->
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -58,7 +57,6 @@
                     android:layout_marginBottom="16dp"
                     android:autofillHints="name" />
 
-                <!-- Phone Input -->
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -80,7 +78,6 @@
                     android:layout_marginBottom="16dp"
                     android:autofillHints="phoneNumber" />
 
-                <!-- Email Input -->
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -102,7 +99,6 @@
                     android:layout_marginBottom="16dp"
                     android:autofillHints="emailAddress" />
 
-                <!-- Favorite CheckBox -->
                 <CheckBox
                     android:id="@+id/cb_favorite"
                     android:layout_width="match_parent"
@@ -115,74 +111,6 @@
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
-        <!-- ( Quick Actions) -->
-
-
-        <!-- Row 1: Call & Message -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginBottom="10dp">
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btn_call"
-                android:layout_width="0dp"
-                android:layout_height="50dp"
-                android:layout_weight="1"
-                android:text="@string/call"
-                android:textStyle="bold"
-                app:backgroundTint="#4CAF50"
-                android:textColor="#FFFFFF"
-                app:cornerRadius="12dp"
-                android:layout_marginEnd="6dp" />
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btn_sms"
-                android:layout_width="0dp"
-                android:layout_height="50dp"
-                android:layout_weight="1"
-                android:text="@string/message"
-                android:textStyle="bold"
-                app:backgroundTint="#1E88E5"
-                android:textColor="#FFFFFF"
-                app:cornerRadius="12dp"
-                android:layout_marginStart="6dp" />
-        </LinearLayout>
-
-        <!-- Row 2: Email & Share -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginBottom="24dp">
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btn_email"
-                android:layout_width="0dp"
-                android:layout_height="50dp"
-                android:layout_weight="1"
-                android:text="@string/email"
-                android:textStyle="bold"
-                app:backgroundTint="#FB8C00"
-                android:textColor="#FFFFFF"
-                app:cornerRadius="12dp"
-                android:layout_marginEnd="6dp" />
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btn_share"
-                android:layout_width="0dp"
-                android:layout_height="50dp"
-                android:layout_weight="1"
-                android:text="@string/share"
-                android:textStyle="bold"
-                app:backgroundTint="#8E24AA"
-                android:textColor="#FFFFFF"
-                app:cornerRadius="12dp"
-                android:layout_marginStart="6dp" />
-        </LinearLayout>
-
-        <!-- Action Buttons -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
