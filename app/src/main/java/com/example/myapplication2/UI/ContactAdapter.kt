@@ -1,4 +1,6 @@
-package com.example.myapplication2.ui
+
+
+package com.example.myapplication2.UI
 
 import android.content.Context
 import android.view.LayoutInflater
@@ -9,6 +11,10 @@ import android.widget.TextView
 import com.example.myapplication2.R
 import com.example.myapplication2.data.Contact
 
+/**
+ * Custom ArrayAdapter for ListView.
+ * Binds list of Contact objects to item_contact.xml layout views.
+ */
 class ContactAdapter(
     context: Context,
     private val contacts: MutableList<Contact>

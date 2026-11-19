@@ -36,6 +36,7 @@
                     android:textColor="#1565C0"
                     android:layout_marginBottom="20dp" />
 
+                <!-- Name Input -->
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -57,6 +58,7 @@
                     android:layout_marginBottom="16dp"
                     android:autofillHints="name" />
 
+                <!-- Phone Input -->
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -78,6 +80,7 @@
                     android:layout_marginBottom="16dp"
                     android:autofillHints="phoneNumber" />
 
+                <!-- Email Input -->
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -99,6 +102,7 @@
                     android:layout_marginBottom="16dp"
                     android:autofillHints="emailAddress" />
 
+                <!-- Favorite CheckBox -->
                 <CheckBox
                     android:id="@+id/cb_favorite"
                     android:layout_width="match_parent"
@@ -111,6 +115,7 @@
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
+        <!-- Action Buttons -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

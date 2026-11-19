@@ -16,11 +16,16 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.example.myapplication2.data.Contact
 import com.example.myapplication2.data.ContactDatabase
-import com.example.myapplication2.ui.ContactAdapter
+import com.example.myapplication2.UI.ContactAdapter
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
+/**
+ * Main Activity for Simple Contacts application.
+ * Handles view binding, real-time search filtering, contact list display,
+ * lifecycle logging, and Room database synchronization.
+ */
 class MainActivity : AppCompatActivity() {
 
     private val TAG = "ActivityLifecycle"
@@ -45,8 +50,10 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         Log.d(TAG, "MainActivity - onCreate()")
 
+        // Initialize SharedPreferences
         sharedPreferences = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
 
+        // Initialize Views
         tvStudentInfo = findViewById(R.id.tv_student_info)
         etSearch = findViewById(R.id.et_search)
         tvTotalCount = findViewById(R.id.tv_total_count)
@@ -54,12 +61,14 @@ class MainActivity : AppCompatActivity() {
         tvEmpty = findViewById(R.id.tv_empty)
         btnAddContact = findViewById(R.id.btn_add_contact)
 
+        // Display Student Header Info
         val savedStudentInfo = sharedPreferences.getString(
             KEY_STUDENT_INFO,
             getString(R.string.student_info_header)
         )
         tvStudentInfo.text = savedStudentInfo
 
+        // Restore saved instance state across screen rotation
         if (savedInstanceState != null) {
             currentSearchQuery = savedInstanceState.getString(KEY_LAST_SEARCH, "")
             etSearch.setText(currentSearchQuery)
@@ -70,9 +79,11 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+        // Initialize ListView with ArrayAdapter
         adapter = ContactAdapter(this, mutableListOf())
         lvContacts.adapter = adapter
 
+        // Open ContactDetailActivity on list item click
         lvContacts.setOnItemClickListener { _, _, position, _ ->
             val contact = adapter.getItem(position)
             if (contact != null) {
@@ -82,11 +93,13 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+        // Open ContactEditActivity on Add button click
         btnAddContact.setOnClickListener {
             val intent = Intent(this, ContactEditActivity::class.java)
             startActivity(intent)
         }
 
+        // Search Filter Listener
         etSearch.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
@@ -97,6 +110,7 @@ class MainActivity : AppCompatActivity() {
             override fun afterTextChanged(s: Editable?) {}
         })
 
+        // Seed sample contacts on first launch if empty
         seedSampleDataIfEmpty()
     }
 
