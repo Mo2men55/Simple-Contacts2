@@ -50,14 +50,17 @@ class ContactEditActivity : AppCompatActivity() {
         btnSave = findViewById(R.id.btn_save)
         btnCancel = findViewById(R.id.btn_cancel)
 
+        // Read data from Intent extra
         contactId = intent.getLongExtra("CONTACT_ID", -1L)
 
+        // Handle incoming implicit intent (ACTION_SEND with text/plain)
         if (intent.action == Intent.ACTION_SEND && intent.type == "text/plain") {
             val sharedText = intent.getStringExtra(Intent.EXTRA_TEXT)
             if (!sharedText.isNullOrEmpty()) {
                 etName.setText(sharedText)
             }
         }
+
 
         if (contactId != -1L) {
             tvTitle.text = getString(R.string.edit_contact)
@@ -142,7 +145,7 @@ class ContactEditActivity : AppCompatActivity() {
         }
     }
 
-    // 🟡 [Member 4 Lifecycle Callbacks]
+
     override fun onStart() {
         super.onStart()
         Log.d(TAG, "ContactEditActivity - onStart()")
