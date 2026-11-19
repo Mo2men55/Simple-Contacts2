@@ -18,8 +18,10 @@
     <string name="email_optional">Email (optional)</string>
     <string name="favorite">Favorite</string>
     <string name="is_favorite">Marked as Favorite</string>
+    <string name="add_favorite">Add to Favorites</string>
     <string name="error_name">Name is required</string>
     <string name="error_phone">Enter a valid phone number</string>
+    <string name="no_app_found">No app found to handle this action</string>
 
     <string name="call">Call</string>
     <string name="message">Message</string>
