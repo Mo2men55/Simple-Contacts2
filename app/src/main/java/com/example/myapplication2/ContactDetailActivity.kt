@@ -60,10 +60,9 @@ class ContactDetailActivity : AppCompatActivity() {
         btnEdit = findViewById(R.id.btn_edit)
         btnDelete = findViewById(R.id.btn_delete)
 
-        // 🟢 [Member 5 - Intent Extra]: استقبال ID جهة الاتصال
+
         contactId = intent.getLongExtra("CONTACT_ID", -1L)
 
-        // 🟢 [Member 5 - Explicit Intent]: ربط زر التعديل بالانتقال لشاشة ContactEditActivity
         btnEdit.setOnClickListener {
             val intent = Intent(this, ContactEditActivity::class.java)
             intent.putExtra("CONTACT_ID", contactId)
@@ -106,7 +105,47 @@ class ContactDetailActivity : AppCompatActivity() {
         tvFavorite.visibility = if (contact.isFavorite) View.VISIBLE else View.GONE
     }
     private fun setupImplicitListeners() {
-        // abdallah
+
+        // Dial phone number
+        btnCall.setOnClickListener {
+            contact?.let { c ->
+                val intent = Intent(Intent.ACTION_DIAL, Uri.parse("tel:${c.phone}"))
+                startActivity(intent)
+            }
+        }
+
+        // Send SMS
+        btnSms.setOnClickListener {
+            contact?.let { c ->
+                val intent = Intent(Intent.ACTION_SENDTO, Uri.parse("smsto:${c.phone}"))
+                startActivity(intent)
+            }
+        }
+
+        // Send Email
+        btnEmail.setOnClickListener {
+            contact?.let { c ->
+                if (c.email.isNotEmpty()) {
+                    val intent = Intent(Intent.ACTION_SENDTO, Uri.parse("mailto:${c.email}"))
+                    startActivity(intent)
+                } else {
+                    Toast.makeText(this, "No email address available", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+
+        // Share contact via chooser
+        btnShare.setOnClickListener {
+            contact?.let { c ->
+                val shareBody = "Contact: ${c.name}\nPhone: ${c.phone}\nEmail: ${c.email}"
+                val intent = Intent(Intent.ACTION_SEND).apply {
+                    type = "text/plain"
+                    putExtra(Intent.EXTRA_SUBJECT, "Contact Info: ${c.name}")
+                    putExtra(Intent.EXTRA_TEXT, shareBody)
+                }
+                startActivity(Intent.createChooser(intent, getString(R.string.share_contact)))
+            }
+        }
 
         btnDelete.setOnClickListener {
             contact?.let { c ->
